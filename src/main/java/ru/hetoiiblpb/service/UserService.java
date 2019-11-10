@@ -16,6 +16,8 @@ public interface UserService {
 
      User getUserById(Long id) throws DBException;
 
+     User getUserByName(String name) throws DBException;
+
 
      boolean checkUserByEmail(String mail) throws DBException;
 

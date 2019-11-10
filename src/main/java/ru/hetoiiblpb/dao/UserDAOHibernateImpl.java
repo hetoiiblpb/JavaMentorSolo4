@@ -91,6 +91,24 @@ public class UserDAOHibernateImpl implements UserDAO {
     }
 
     @Override
+    public User getUserByName(String name) throws SQLException {
+        Session session = sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+        Query query = session.createQuery("from User where name =:param");
+        query.setParameter("param", name);
+        User user = (User) query.getSingleResult();
+        try {
+            transaction.commit();
+            session.close();
+            return user;
+        } catch (Exception e) {
+            transaction.rollback();
+            session.close();
+            return null;
+        }
+    }
+
+    @Override
     public boolean updateUser(User user) throws SQLException {
         Session session = sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();

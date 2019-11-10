@@ -1,6 +1,7 @@
 package ru.hetoiiblpb.model;
 
 import java.util.Objects;
+import java.util.Set;
 import javax.persistence.*;
 
 @Entity
@@ -25,8 +26,11 @@ public class User {
     @Column(name = "age", length = 20)
     private Long age;
 
-    @Column(name = "role", length = 5, nullable = false, columnDefinition = "varchar(5) default 'user'")
-    private String role;
+    @ManyToMany
+    @JoinTable (name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles;
+//    @Column(name = "role", length = 5, nullable = false, columnDefinition = "varchar(5) default 'user'")
+//    private String role;
 
 
 
@@ -38,7 +42,7 @@ public class User {
         this.password = password;
         this.email = email;
         this.age = age;
-        this.role = "user";
+//        this.role = "user";
     }
 
     public User(String name, String password, String email, Long age, String role) {
@@ -46,7 +50,7 @@ public class User {
         this.password = password;
         this.email = email;
         this.age = age;
-        this.role = role;
+//        this.role = role;
 
     }
 
@@ -56,7 +60,7 @@ public class User {
         this.password = password;
         this.email = email;
         this.age = age;
-        this.role = "user";
+//        this.role = "user";
     }
 
     public User(Long id, String name, String password, String email, Long age, String role) {
@@ -65,7 +69,7 @@ public class User {
         this.password = password;
         this.email = email;
         this.age = age;
-        this.role = role;
+//        this.role = role;
     }
 
     public long getId() {
@@ -88,9 +92,9 @@ public class User {
         return password;
     }
 
-    public String getRole() {
-        return role;
-    }
+//    public String getRole() {
+//        return role;
+//    }
 
     public void setId(Long id) {
         this.id = id;
@@ -112,9 +116,17 @@ public class User {
         this.age = age;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public Set<Role> getRoles() {
+        return roles;
     }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
+
+    //    public void setRole(String role) {
+//        this.role = role;
+//    }
 
     @Override
     public boolean equals(Object o) {
@@ -141,7 +153,7 @@ public class User {
                 ", password='" + password + '\'' +
                 ", email='" + email + '\'' +
                 ", age=" + age +
-                ", role='" + role + '\'' +
+//                ", role='" + role + '\'' +
                 '}';
     }
 }
