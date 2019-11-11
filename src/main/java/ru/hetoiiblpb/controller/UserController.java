@@ -3,12 +3,16 @@ package ru.hetoiiblpb.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import ru.hetoiiblpb.exception.DBException;
 import ru.hetoiiblpb.model.User;
+import ru.hetoiiblpb.service.SecurityService;
 import ru.hetoiiblpb.service.UserService;
 import ru.hetoiiblpb.service.UserServiceImpl;
+import ru.hetoiiblpb.validator.UserValidator;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -18,11 +22,44 @@ import java.util.List;
 @Controller
 public class UserController {
     private UserService userService ;
+    private SecurityService securityService;
+    private UserValidator userValidator;
+
+    @Autowired
+    public void setUserValidator(UserValidator userValidator) {
+        this.userValidator = userValidator;
+    }
+
+    @Autowired
+    public void setSecurityService(SecurityService securityService) {
+        this.securityService = securityService;
+    }
+
     @Autowired
     public void setUserService(UserService userService) {
         this.userService = userService;
     }
 
+
+    @RequestMapping(value = "/registration", method = RequestMethod.GET)
+    public String registration (Model model){
+        model.addAttribute("userForm", new User());
+        return "registration";
+
+    }
+
+    @RequestMapping (value = "/registration", method = RequestMethod.POST)
+    public  String registration(@ModelAttribute("userForm") User userForm, BindingResult bindingResult, Model model) throws DBException {
+        userValidator.validate(userForm, bindingResult);
+
+        if (bindingResult.hasErrors()) {
+            return "registration";
+        }
+
+        userService.addUser(userForm);
+        securityService.autoLogin(userForm.getName(),userForm.getConfirmPassword());
+        return "redirect:/helloUser";
+    }
 
     @RequestMapping(value = "/admin", method = RequestMethod.GET)
     public ModelAndView allUsers() throws SQLException, DBException {
@@ -90,7 +127,7 @@ public class UserController {
         if (user != null) {
             HttpSession httpSession = request.getSession(true);
             httpSession.setAttribute("userSession",user);
-            if (user.getRole().equals("admin")) {
+            if (user.getRoles().equals("admin")) {
                 modelAndView.setViewName("redirect:/admin");
             } else {
                 modelAndView.setViewName("redirect:/helloUser");

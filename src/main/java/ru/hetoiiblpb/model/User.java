@@ -20,6 +20,9 @@ public class User {
     @Column(name = "password", length = 128)
     private String password;
 
+    @Transient
+    private String confirmPassword;
+
     @Column(name = "mail", length = 128)
     private String email;
 
@@ -70,6 +73,14 @@ public class User {
         this.email = email;
         this.age = age;
 //        this.role = role;
+    }
+
+    public String getConfirmPassword() {
+        return confirmPassword;
+    }
+
+    public void setConfirmPassword(String confirmPassword) {
+        this.confirmPassword = confirmPassword;
     }
 
     public long getId() {
