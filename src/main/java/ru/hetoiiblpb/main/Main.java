@@ -15,7 +15,7 @@ public class Main {
         String password = DBHelper.getProperties().getProperty("password");
         System.out.println("Connecting...");
 
-        try (Connection connection = DriverManager.getConnection(properties.getProperty("url"), properties)){
+        try (Connection connection = DriverManager.getConnection(properties.getProperty("url"), username,password)){
             System.out.println("Connection successful!");
         } catch (SQLException e) {
             System.out.println("Connection failed!");

@@ -28,4 +28,6 @@ public interface UserDAO {
 
     User getUserById(Long id) throws SQLException, DBException;
 
+    User getUserByName(String name) throws SQLException, DBException;
+
 }
